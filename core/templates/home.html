@@ -1,62 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PDF Summariser - Drag & Drop</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #f4f4f4;
-        margin: 0;
-        padding: 0;
-      }
-      .container {
-        max-width: 500px;
-        margin: 60px auto;
-        padding: 40px;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      }
-      .drag-drop {
-        border: 2px dashed #007bff;
-        border-radius: 8px;
-        padding: 40px 20px;
-        text-align: center;
-        color: #007bff;
-        background: #f9f9f9;
-        transition: background 0.2s, border-color 0.2s;
-      }
-      .drag-drop.dragover {
-        background: #e3f2fd;
-        border-color: #0056b3;
-      }
-      .drag-drop input[type="file"] {
-        display: none;
-      }
-      .drag-drop-label {
-        cursor: pointer;
-        font-weight: bold;
-      }
-      #summary {
-        margin-top: 20px;
-        padding: 20px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        display: none;
-      }
-      .loading {
-        display: none;
-        text-align: center;
-        margin-top: 20px;
-      }
-      .error {
-        color: #dc3545;
-        margin-top: 10px;
-        display: none;
-      }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
   <body>
     <div class="container">
@@ -78,84 +27,11 @@
       <div class="loading">Processing your resume...</div>
       <div class="error"></div>
       <div id="summary"></div>
+      <div id="hireInput">
+        <button>Yes</button>
+        <button>No</button>
+      </div>
     </div>
-    <script>
-      const dragDropArea = document.getElementById("drag-drop-area");
-      const fileInput = document.getElementById("file-upload");
-      const form = document.getElementById("upload-form");
-      const loading = document.querySelector(".loading");
-      const error = document.querySelector(".error");
-      const summary = document.getElementById("summary");
-
-      function showLoading() {
-        loading.style.display = "block";
-        error.style.display = "none";
-        summary.style.display = "none";
-      }
-
-      function showError(message) {
-        loading.style.display = "none";
-        error.style.display = "block";
-        error.textContent = message;
-        summary.style.display = "none";
-      }
-
-      function showSummary(text) {
-        loading.style.display = "none";
-        error.style.display = "none";
-        summary.style.display = "block";
-        summary.textContent = text;
-      }
-
-      async function handleFileUpload(file) {
-        const formData = new FormData();
-        formData.append("pdf", file);
-
-        try {
-          showLoading();
-          const response = await fetch("/", {
-            method: "POST",
-            body: formData,
-          });
-          const data = await response.json();
-          console.log(data);
-          if (data.status === "success") {
-            showSummary(data.summary);
-          } else {
-            showError(
-              data.message || "An error occurred while processing the file."
-            );
-          }
-        } catch (err) {
-          showError("Failed to upload file. Please try again.");
-        }
-      }
-
-      dragDropArea.addEventListener("click", () => fileInput.click());
-
-      dragDropArea.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        dragDropArea.classList.add("dragover");
-      });
-
-      dragDropArea.addEventListener("dragleave", (e) => {
-        e.preventDefault();
-        dragDropArea.classList.remove("dragover");
-      });
-
-      dragDropArea.addEventListener("drop", (e) => {
-        e.preventDefault();
-        dragDropArea.classList.remove("dragover");
-        if (e.dataTransfer.files.length) {
-          handleFileUpload(e.dataTransfer.files[0]);
-        }
-      });
-
-      fileInput.addEventListener("change", () => {
-        if (fileInput.files.length) {
-          handleFileUpload(fileInput.files[0]);
-        }
-      });
-    </script>
+    <script src="{% static 'js/main.js' %}"></script>
   </body>
 </html>
