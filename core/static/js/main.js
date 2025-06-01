@@ -69,7 +69,6 @@ async function handleFileUpload(file) {
       body: formData,
     });
     const data = await response.json();
-    console.log(data);
     if (data.status === "success") {
       showSummary(data.summary);
       if (data.requires_approval) {
@@ -97,7 +96,13 @@ async function handleFileUpload(file) {
   }
 }
 
-dragDropArea.addEventListener("click", () => fileInput.click());
+dragDropArea.addEventListener("click", (e) => {
+  // Only trigger file input if the click is directly on the drag-drop area
+  // and not on any child elements
+  if (e.target === dragDropArea) {
+    fileInput.click();
+  }
+});
 
 dragDropArea.addEventListener("dragover", (e) => {
   e.preventDefault();

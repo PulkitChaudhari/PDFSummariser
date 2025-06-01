@@ -100,7 +100,11 @@ def home(request):
         
         try:
             # Process the PDF and get summary
-            result = process_pdf(temp_path)
+            # result = process_pdf(temp_path)
+            result = {
+                "requires_approval": True,
+                "approval_message": "Tool invocations require approval:\n\n"
+            }
             
             # Clean up the temporary file
             os.remove(temp_path)
